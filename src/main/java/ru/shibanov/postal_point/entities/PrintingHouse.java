@@ -2,6 +2,8 @@ package ru.shibanov.postal_point.entities;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "PrintingHouse")
 public class PrintingHouse {
