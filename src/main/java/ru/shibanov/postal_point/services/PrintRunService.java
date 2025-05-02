@@ -28,10 +28,10 @@ public class PrintRunService {
 
     @Transactional(readOnly = true)
     public List<PrintRun> findByNewspaper(Newspaper newspaper) {
-        return printRunRepository.findPrintRunByNewspaper(newspaper);
+        return printRunRepository.findPrintRunsByNewspaper(newspaper);
     }
 
     public Optional<PrintRun> findTopByPrintingHouseAndNewspaperOrderByQuantityDesc(PrintingHouse printingHouse, Newspaper newspaper) {
-     return printRunRepository.findTopByPrintingHouseAndNewspaperOrderByQuantityDesc(newspaper);
+     return Optional.ofNullable(printRunRepository.findTopByPrintingHouseAndNewspaperOrderByQuantityDesc(printingHouse, newspaper));
     }
 }

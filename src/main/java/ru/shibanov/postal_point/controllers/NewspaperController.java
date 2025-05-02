@@ -1,4 +1,4 @@
-package ru.shibanov.postal_point.newspaper;
+package ru.shibanov.postal_point.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

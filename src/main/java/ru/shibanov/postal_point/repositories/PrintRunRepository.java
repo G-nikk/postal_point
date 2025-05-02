@@ -6,8 +6,10 @@ import ru.shibanov.postal_point.entities.Newspaper;
 import ru.shibanov.postal_point.entities.PrintRun;
 import ru.shibanov.postal_point.entities.PrintingHouse;
 
+import java.util.List;
+
 @Repository
 public interface PrintRunRepository extends JpaRepository<PrintRun, Integer> {
-    PrintRun findPrintRunByNewspaper(Newspaper newspaper);
+    List<PrintRun> findPrintRunsByNewspaper(Newspaper newspaper);;
     PrintRun findTopByPrintingHouseAndNewspaperOrderByQuantityDesc(PrintingHouse printingHouse, Newspaper newspaper);
 }
