@@ -20,4 +20,10 @@ public class PrintingHouseService {
     public void save(PrintingHouse printingHouse) {
         printingHouseRepository.save(printingHouse);
     }
+
+    @Transactional
+    public PrintingHouse findById(int id) {
+        return printingHouseRepository.findById(id).orElse(null);
+    }
+
 }
