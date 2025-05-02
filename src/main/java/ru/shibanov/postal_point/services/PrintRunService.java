@@ -27,11 +27,20 @@ public class PrintRunService {
     }
 
     @Transactional(readOnly = true)
+    public PrintRun findById(int id) {
+        return printRunRepository.findById(id).orElse(null);
+    }
+
+    @Transactional(readOnly = true)
     public List<PrintRun> findByNewspaper(Newspaper newspaper) {
         return printRunRepository.findPrintRunsByNewspaper(newspaper);
     }
 
     public Optional<PrintRun> findTopByPrintingHouseAndNewspaperOrderByQuantityDesc(PrintingHouse printingHouse, Newspaper newspaper) {
      return Optional.ofNullable(printRunRepository.findTopByPrintingHouseAndNewspaperOrderByQuantityDesc(printingHouse, newspaper));
+    }
+
+    public List<PrintRun> findPrintRunsByNewspaperAndPrintingHouse(Newspaper newspaper, PrintingHouse printingHouse) {
+        return printRunRepository.findPrintRunsByNewspaperAndPrintingHouse(newspaper, printingHouse);
     }
 }

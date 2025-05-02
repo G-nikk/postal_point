@@ -10,6 +10,7 @@ import java.util.List;
 
 @Repository
 public interface PrintRunRepository extends JpaRepository<PrintRun, Integer> {
-    List<PrintRun> findPrintRunsByNewspaper(Newspaper newspaper);;
+    List<PrintRun> findPrintRunsByNewspaper(Newspaper newspaper);
     PrintRun findTopByPrintingHouseAndNewspaperOrderByQuantityDesc(PrintingHouse printingHouse, Newspaper newspaper);
+    List<PrintRun> findPrintRunsByNewspaperAndPrintingHouse(Newspaper newspaper, PrintingHouse printingHouse);
 }

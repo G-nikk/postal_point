@@ -7,6 +7,7 @@ import ru.shibanov.postal_point.entities.PostOffice;
 import ru.shibanov.postal_point.repositories.PostOfficeRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -24,7 +25,24 @@ public class PostOfficeService {
     }
 
     @Transactional
-    public void save(PostOffice postOffice) {
+    public PostOffice save(PostOffice postOffice) {
         postOfficeRepository.save(postOffice);
+        return postOffice;
+    }
+
+    public List<PostOffice> findAll() {
+        return postOfficeRepository.findAll();
+    }
+
+    public Optional<PostOffice> findById(Integer id) {
+        return postOfficeRepository.findById(id);
+    }
+
+    public boolean existsById(Integer id) {
+        return postOfficeRepository.existsById(id);
+    }
+
+    public void deleteById(Integer id) {
+        postOfficeRepository.deleteById(id);
     }
 }
