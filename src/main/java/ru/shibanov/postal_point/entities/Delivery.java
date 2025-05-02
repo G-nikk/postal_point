@@ -59,7 +59,7 @@ public class Delivery {
     public String toString() {
         return "Delivery{" +
                 "deliveryID=" + deliveryID +
-                ", printRun=" + printRun.getPrintRunID() +
+                ", PrintRun=" + printRun.getPrintRunID() +
                 ", postOffice=" + postOffice.getNumber() +
                 ", quantity=" + quantity +
                 '}';
