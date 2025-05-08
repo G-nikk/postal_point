@@ -1,6 +1,7 @@
 package ru.shibanov.postal_point.entities;
 
 import jakarta.persistence.*;
+import org.springframework.lang.Contract;
 
 @Entity
 @Table(name = "Delivery")
@@ -64,4 +65,6 @@ public class Delivery {
                 ", quantity=" + quantity +
                 '}';
     }
+
+
 }

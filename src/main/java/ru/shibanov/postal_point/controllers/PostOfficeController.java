@@ -1,6 +1,5 @@
 package ru.shibanov.postal_point.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,8 +7,7 @@ import ru.shibanov.postal_point.entities.*;
 import ru.shibanov.postal_point.services.*;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -81,40 +79,54 @@ public class PostOfficeController {
         int maxQuantity = 0;
 
         for (PostOffice postOffice : postOffices) {
-            int totalQuantity = deliveryService.findByPostOffice(postOffice).stream()
-                    .mapToInt(Delivery::getQuantity)
-                    .sum();
+            List<Delivery> deliveries = deliveryService.findByPostOffice(postOffice);
+            int totalQuantity = 0;
+
+            // Обычный цикл для подсчета суммы количеств поставок
+            for (Delivery delivery : deliveries) {
+                totalQuantity += delivery.getQuantity();
+            }
+
             if (totalQuantity > maxQuantity) {
                 maxQuantity = totalQuantity;
                 mostReceivedOffice = postOffice;
             }
         }
 
-        return mostReceivedOffice != null ? new ResponseEntity<>(mostReceivedOffice, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return mostReceivedOffice != null ?
+                new ResponseEntity<>(mostReceivedOffice, HttpStatus.OK) :
+                new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     // GET /post-offices/newspaper-in-printing-house?newspaperId={newspaperId}&printingHouseId={printingHouseId} - Get post offices receiving a newspaper from a printing house
     @GetMapping("/newspaper-in-printing-house")
-    public ResponseEntity<List<PostOffice>> getPostOfficesForNewspaperInPrintingHouse(@RequestParam Integer newspaperId, @RequestParam Integer printingHouseId) {
-        Optional<Newspaper> newspaperOptional = Optional.ofNullable(newspaperService.findById(newspaperId));
-        Optional<PrintingHouse> printingHouseOptional = Optional.ofNullable(printingHouseService.findById(printingHouseId));
+    public ResponseEntity<List<PostOffice>> getPostOfficesForNewspaperInPrintingHouse(
+            @RequestParam Integer newspaperId,
+            @RequestParam Integer printingHouseId) {
 
-        if (!newspaperOptional.isPresent() || !printingHouseOptional.isPresent()) {
+        // Проверка существования объектов
+        Newspaper newspaper = newspaperService.findById(newspaperId);
+        PrintingHouse printingHouse = printingHouseService.findById(printingHouseId);
+
+        if (newspaper == null || printingHouse == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        Newspaper newspaper = newspaperOptional.get();
-        PrintingHouse printingHouse = printingHouseOptional.get();
-
+        // Получаем печать (тиражи) для данной газеты и типографии
         List<PrintRun> printRuns = printRunService.findPrintRunsByNewspaperAndPrintingHouse(newspaper, printingHouse);
 
-        List<PostOffice> postOffices = printRuns.stream()
-                .flatMap(printRun -> deliveryService.findDeliveriesByPrintRun(printRun).stream())
-                .map(Delivery::getPostOffice)
-                .distinct()
-                .collect(Collectors.toList());
+        Set<PostOffice> uniquePostOffices = new HashSet<>();
 
-        return new ResponseEntity<>(postOffices, HttpStatus.OK);
+        // Проходим по каждому PrintRun'у и собираем уникальные почтовые отделения
+        for (PrintRun printRun : printRuns) {
+            List<Delivery> deliveries = deliveryService.findDeliveriesByPrintRun(printRun);
+            for (Delivery delivery : deliveries) {
+                uniquePostOffices.add(delivery.getPostOffice());
+            }
+        }
+
+        // Возвращаем список уникальных почтовых отделений
+        return new ResponseEntity<>(new ArrayList<>(uniquePostOffices), HttpStatus.OK);
     }
 
     // GET /post-offices/max-cost - Get the post office with the maximum total cost of received newspapers
@@ -125,17 +137,18 @@ public class PostOfficeController {
         BigDecimal maxCost = BigDecimal.ZERO;
 
         for (PostOffice postOffice : postOffices) {
-            BigDecimal totalCostForOffice = deliveryService.findByPostOffice(postOffice).stream()
-                    .map(delivery -> {
-                        Optional<PrintRun> printRunOptional = printRunService.findById(delivery.getPrintRun().getPrintRunID());
-                        if (printRunOptional.isPresent()) {
-                            PrintRun printRun = printRunOptional.get();
-                            Newspaper newspaper = printRun.getNewspaper();
-                            return newspaper.getPrice().multiply(BigDecimal.valueOf(delivery.getQuantity()));
-                        }
-                        return BigDecimal.ZERO;
-                    })
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            List<Delivery> deliveries = deliveryService.findByPostOffice(postOffice);
+            BigDecimal totalCostForOffice = BigDecimal.ZERO;
+
+            for (Delivery delivery : deliveries) {
+                // Предполагается, что PrintRun обязательно существует
+                PrintRun printRun = printRunService.findById(delivery.getPrintRun().getPrintRunID());
+                Newspaper newspaper = printRun.getNewspaper();
+                BigDecimal pricePerUnit = newspaper.getPrice();
+                long quantity = delivery.getQuantity();
+
+                totalCostForOffice = totalCostForOffice.add(pricePerUnit.multiply(BigDecimal.valueOf(quantity)));
+            }
 
             if (totalCostForOffice.compareTo(maxCost) > 0) {
                 maxCost = totalCostForOffice;

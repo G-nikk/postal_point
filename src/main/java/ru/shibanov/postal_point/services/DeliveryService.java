@@ -8,6 +8,7 @@ import ru.shibanov.postal_point.entities.PostOffice;
 import ru.shibanov.postal_point.entities.PrintRun;
 import ru.shibanov.postal_point.repositories.DeliveryRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,11 +26,11 @@ public class DeliveryService {
         deliveryRepository.save(delivery);
     }
 
-    public Optional<Object> findByPostOffice(PostOffice postOffice) {
-        return Optional.ofNullable(deliveryRepository.findDeliveriesByPostOffice(postOffice));
+    public List<Delivery> findByPostOffice(PostOffice postOffice) {
+        return deliveryRepository.findDeliveriesByPostOffice(postOffice);
     }
 
-    public Optional<Object> findDeliveriesByPrintRun(PrintRun printRun) {
-        return Optional.ofNullable(deliveryRepository.findDeliveriesByPrintRun(printRun));
+    public List<Delivery> findDeliveriesByPrintRun(PrintRun printRun) {
+        return deliveryRepository.findDeliveriesByPrintRun(printRun);
     }
 }
