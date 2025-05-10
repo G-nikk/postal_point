@@ -8,7 +8,6 @@ import ru.shibanov.postal_point.services.*;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/post-offices")
