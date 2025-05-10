@@ -1,0 +1,128 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+    "name": "Printing House API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get all printing houses",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/printing-houses",
+          "host": ["{{base_url}}"],
+          "path": ["printing-houses"]
+        },
+        "description": "Получить список всех типографий"
+      },
+      "response": []
+    },
+    {
+      "name": "Get printing house by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/printing-houses/1",
+          "host": ["{{base_url}}"],
+          "path": ["printing-houses", "1"]
+        },
+        "description": "Получить типографию по её ID"
+      },
+      "response": []
+    },
+    {
+      "name": "Create new printing house",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Новая типография\",\n  \"address\": \"Москва, ул. Печатников, 15\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/printing-houses",
+          "host": ["{{base_url}}"],
+          "path": ["printing-houses"]
+        },
+        "description": "Создать новую типографию"
+      },
+      "response": []
+    },
+    {
+      "name": "Update printing house",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"printingHouseID\": 1,\n  \"name\": \"Обновленная типография\",\n  \"address\": \"Москва, обновленный адрес\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/printing-houses/1",
+          "host": ["{{base_url}}"],
+          "path": ["printing-houses", "1"]
+        },
+        "description": "Обновить существующую типографию"
+      },
+      "response": []
+    },
+    {
+      "name": "Delete printing house",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/printing-houses/1",
+          "host": ["{{base_url}}"],
+          "path": ["printing-houses", "1"]
+        },
+        "description": "Удалить типографию по её ID"
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "description": "Базовый URL API"
+    }
+  ],
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test(\"Status code is successful\", function () {",
+          "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+          "});"
+        ]
+      }
+    }
+  ],
+  "protocolProfileBehavior": {}
+}

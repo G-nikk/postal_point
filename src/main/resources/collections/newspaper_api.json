@@ -1,0 +1,153 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+    "name": "Newspaper API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get all newspapers",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/newspapers",
+          "host": ["{{base_url}}"],
+          "path": ["newspapers"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get newspaper by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/newspapers/1",
+          "host": ["{{base_url}}"],
+          "path": ["newspapers", "1"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create new newspaper",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Новая газета\",\n  \"indexEdition\": \"NG123\",\n  \"editor\": \"Редактор Редакторов\",\n  \"price\": 35.50\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/newspapers",
+          "host": ["{{base_url}}"],
+          "path": ["newspapers"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update newspaper",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"newspaperID\": 1,\n  \"name\": \"Обновленная газета\",\n  \"indexEdition\": \"OG123\",\n  \"editor\": \"Новый Редактор\",\n  \"price\": 40.00\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/newspapers/1",
+          "host": ["{{base_url}}"],
+          "path": ["newspapers", "1"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete newspaper",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/newspapers/1",
+          "host": ["{{base_url}}"],
+          "path": ["newspapers", "1"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get printing houses for newspaper",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/newspapers/1/printing-houses",
+          "host": ["{{base_url}}"],
+          "path": ["newspapers", "1", "printing-houses"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get editor for largest print run",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/newspapers/editor?printingHouseId=1&newspaperId=1",
+          "host": ["{{base_url}}"],
+          "path": ["newspapers", "editor"],
+          "query": [
+            {
+              "key": "printingHouseId",
+              "value": "1"
+            },
+            {
+              "key": "newspaperId",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get total cost for newspaper",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/newspapers/total-cost?newspaperId=1",
+          "host": ["{{base_url}}"],
+          "path": ["newspapers", "total-cost"],
+          "query": [
+            {
+              "key": "newspaperId",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080"
+    }
+  ]
+}
