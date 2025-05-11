@@ -1,5 +1,6 @@
 package ru.shibanov.postal_point.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class PrintRun {
     private Integer quantity;
 
     @OneToMany(mappedBy = "printRun")  // One PrintRun can have many Deliveries
+    @JsonIgnore
     private List<Delivery> deliveries;
 
     public Integer getPrintRunID() {

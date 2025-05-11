@@ -1,5 +1,6 @@
 package ru.shibanov.postal_point.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class PrintingHouse {
     private String address;
 
     @OneToMany(mappedBy = "printingHouse")
+    @JsonIgnore
     private List<PrintRun> printRuns;
 
     public Integer getPrintingHouseID() {

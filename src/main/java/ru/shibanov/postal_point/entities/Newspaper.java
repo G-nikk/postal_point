@@ -26,9 +26,6 @@ public class Newspaper {
     @Column(name = "price", nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
-    @OneToMany(mappedBy = "newspaper")
-    private List<PrintRun> printRuns;
-
     public Integer getNewspaperID() {
         return newspaperID;
     }
@@ -67,14 +64,6 @@ public class Newspaper {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
-    }
-
-    public List<PrintRun> getPrintRuns() {
-        return printRuns;
-    }
-
-    public void setPrintRuns(List<PrintRun> printRuns) {
-        this.printRuns = printRuns;
     }
 
     @Override
