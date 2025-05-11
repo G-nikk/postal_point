@@ -5,23 +5,23 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "PrintRun")
+@Table(name = "printrun")
 public class PrintRun {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "PrintRunID")
+    @Column(name = "printrunid")
     private Integer printRunID;
 
     @ManyToOne // Many PrintRuns to one Newspaper
-    @JoinColumn(name = "NewspaperID", nullable = false)
+    @JoinColumn(name = "newspaperid", nullable = false)
     private Newspaper newspaper;
 
     @ManyToOne // Many PrintRuns to one PrintingHouse
-    @JoinColumn(name = "PrintingHouseID", nullable = false)
+    @JoinColumn(name = "printinghouseid", nullable = false)
     private PrintingHouse printingHouse;
 
-    @Column(name = "Quantity", nullable = false)
+    @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
     @OneToMany(mappedBy = "printRun")  // One PrintRun can have many Deliveries

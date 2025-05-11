@@ -3,23 +3,23 @@ package ru.shibanov.postal_point.entities;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Delivery")
+@Table(name = "delivery")
 public class Delivery {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "DeliveryID")
+    @Column(name = "deliveryid")
     private Integer deliveryID;
 
     @ManyToOne // Many Deliveries to one PrintRun
-    @JoinColumn(name = "PrintRunID", nullable = false)
+    @JoinColumn(name = "printrunid", nullable = false)
     private PrintRun printRun;
 
     @ManyToOne // Many Deliveries to one PostOffice
-    @JoinColumn(name = "PostOfficeID", nullable = false)
+    @JoinColumn(name = "postofficeid", nullable = false)
     private PostOffice postOffice;
 
-    @Column(name = "Quantity", nullable = false)
+    @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
 

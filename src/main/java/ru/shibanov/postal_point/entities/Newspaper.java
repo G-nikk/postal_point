@@ -6,29 +6,28 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
-@Table(name = "Newspaper")
+@Table(name = "newspaper")
 public class Newspaper {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "NewspaperID")
+    @Column(name = "newspaperid")
     private Integer newspaperID;
 
-    @Column(name = "Name", nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "IndexEdition", nullable = false, unique = true)
+    @Column(name = "indexedition", nullable = false, unique = true)
     private String indexEdition;
 
-    @Column(name = "Editor", nullable = false)
+    @Column(name = "editor", nullable = false)
     private String editor;
 
-    @Column(name = "Price", nullable = false, precision = 10, scale = 2)
+    @Column(name = "price", nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
     @OneToMany(mappedBy = "newspaper")
     private List<PrintRun> printRuns;
-
 
     public Integer getNewspaperID() {
         return newspaperID;

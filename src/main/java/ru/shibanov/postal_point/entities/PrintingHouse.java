@@ -5,18 +5,18 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "PrintingHouse")
+@Table(name = "printinghouse")
 public class PrintingHouse {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "PrintingHouseID")
+    @Column(name = "printinghouseid")
     private Integer printingHouseID;
 
-    @Column(name = "Name", nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "Address")
+    @Column(name = "address")
     private String address;
 
     @OneToMany(mappedBy = "printingHouse")
