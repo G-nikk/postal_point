@@ -20,7 +20,7 @@ public class PrintingHouse {
     @Column(name = "address")
     private String address;
 
-    @OneToMany(mappedBy = "printingHouse")
+    @OneToMany(mappedBy = "printingHouse", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<PrintRun> printRuns;
 

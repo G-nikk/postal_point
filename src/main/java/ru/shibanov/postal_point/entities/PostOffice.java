@@ -1,5 +1,6 @@
 package ru.shibanov.postal_point.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class PostOffice {
     private String address;
 
     @OneToMany(mappedBy = "postOffice")
+    @JsonIgnore
     private List<Delivery> deliveries;
 
     public Integer getPostOfficeID() {

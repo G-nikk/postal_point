@@ -25,7 +25,7 @@ public class PrintRun {
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
-    @OneToMany(mappedBy = "printRun")  // One PrintRun can have many Deliveries
+    @OneToMany(mappedBy = "printRun", cascade = CascadeType.ALL)  // One PrintRun can have many Deliveries
     @JsonIgnore
     private List<Delivery> deliveries;
 
