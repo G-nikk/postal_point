@@ -17,8 +17,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/newspapers")
 @CrossOrigin(origins = "http://localhost:5173")
+@RequestMapping("/newspapers")
 public class NewspaperController {
     private final NewspaperService newspaperService;
     private final PrintRunService printRunService;

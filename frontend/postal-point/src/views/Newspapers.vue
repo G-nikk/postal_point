@@ -23,7 +23,7 @@
         <tr v-for="newspaper in newspapers" :key="newspaper.newspaperID">
           <td>{{ newspaper.newspaperID }}</td>
           <td>{{ newspaper.name }}</td>
-          <td>{{ newspaper.index }}</td>
+          <td>{{ newspaper.indexEdition }}</td>
           <td>{{ newspaper.editor }}</td>
           <td>{{ newspaper.price }} ₽</td>
           <td>
@@ -42,7 +42,7 @@
       <h2>{{ showEditModal ? 'Редактировать' : 'Добавить' }} газету</h2>
       <form @submit.prevent="submitForm">
         <label>Название: <input v-model="form.name" required /></label>
-        <label>Индекс: <input v-model="form.index" required /></label>
+        <label>Индекс: <input v-model="form.indexEdition" required /></label>
         <label>Редактор: <input v-model="form.editor" required /></label>
         <label>Цена: <input v-model="form.price" type="number" step="0.01" required /></label>
         <button type="submit">Сохранить</button>
@@ -72,7 +72,8 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useNewspaperStore } from '../stores/newspaper.js';
+//@ts-ignore
+import { useNewspaperStore } from '../stores/newspaper_store';
 
 const newspaperStore = useNewspaperStore();
 const { newspapers, loading, error, fetchNewspapers, createNewspaper, updateNewspaper, deleteNewspaper: deleteNewspaperStore, getPrintingHouses, getTotalCost } = newspaperStore;
@@ -87,7 +88,7 @@ const totalCostModal = ref(false);
 const form = ref({
   newspaperID: null as number | null,
   name: '',
-  index: '',
+  indexEdition: '',
   editor: '',
   price: 0,
 });
@@ -128,7 +129,7 @@ const submitForm = async () => {
 const closeModal = () => {
   showCreateModal.value = false;
   showEditModal.value = false;
-  form.value = { newspaperID: null, name: '', index: '', editor: '', price: 0 };
+  form.value = { newspaperID: null, name: '', indexEdition: '', editor: '', price: 0 };
 };
 
 // Показать типографии

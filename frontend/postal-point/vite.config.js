@@ -5,8 +5,9 @@ import { fileURLToPath, URL } from 'node:url' // Более современны
 export default defineConfig({
   plugins: [vue()],
   resolve: {
+    extensions: ['.ts', '.vue', '.js'],
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   }
-})
+});

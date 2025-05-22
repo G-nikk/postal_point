@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { NewspaperApi } from '../api/newspaper.js';
+import { NewspaperApi } from '../api/newspaper_api.js';
 
 export const useNewspaperStore = defineStore('newspaper', {
     state: () => ({
