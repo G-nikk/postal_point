@@ -73,7 +73,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 //@ts-ignore
-import { useNewspaperStore } from '../stores/newspaper_store';
+import { useNewspaperStore } from '../stores/newspaper_store.ts';
 
 const newspaperStore = useNewspaperStore();
 const { newspapers, loading, error, fetchNewspapers, createNewspaper, updateNewspaper, deleteNewspaper: deleteNewspaperStore, getPrintingHouses, getTotalCost } = newspaperStore;

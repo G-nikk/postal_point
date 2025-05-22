@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    //"module": "ESNext",
-    "moduleResolution": "bundler",
+    "module": "ESNext",
+    "moduleResolution": "node",
     "target": "ESNext",
     "types": ["vite/client"],
     "baseUrl": ".",
@@ -10,6 +10,9 @@
     },
     "allowImportingTsExtensions": true,
     "noEmit": true,
+  },
+  "ts-node": {
+    "esm":true
   },
   "include": ["*.ts"],
   "exclude": ["node_modules"]
