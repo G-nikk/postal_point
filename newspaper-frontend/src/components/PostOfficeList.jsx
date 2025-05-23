@@ -11,7 +11,7 @@ import { Add, Edit, Delete, Info, FilterList } from '@mui/icons-material';
 
 function PostOfficeForm({ postOffice, onClose, onSave }) {
     const [formData, setFormData] = useState({
-        officeNumber: postOffice?.officeNumber || '',
+        number: postOffice?.number || '', // Исправлено officeNumber -> number
         address: postOffice?.address || ''
     });
 
@@ -27,11 +27,9 @@ function PostOfficeForm({ postOffice, onClose, onSave }) {
                 <Grid container spacing={2} sx={{ mt: 1 }}>
                     <Grid item xs={12} md={6}>
                         <TextField
-                            fullWidth
                             label="Номер отделения"
-                            type="number"
-                            value={formData.officeNumber}
-                            onChange={(e) => setFormData({...formData, officeNumber: e.target.value})}
+                            value={formData.number} // Исправлено officeNumber -> number
+                            onChange={(e) => setFormData({...formData, number: e.target.value})}
                         />
                     </Grid>
                     <Grid item xs={12} md={6}>
@@ -120,8 +118,8 @@ export default function PostOfficeList() {
     };
 
     const filteredData = postOffices.filter(po => {
-        return po.officeNumber.toString().includes(filters.number) &&
-            po.address.toLowerCase().includes(filters.address.toLowerCase());
+        return po.number?.toString().includes(filters.number) && // Исправлено officeNumber -> number
+            po.address?.toLowerCase().includes(filters.address.toLowerCase());
     });
 
     return (
@@ -183,7 +181,7 @@ export default function PostOfficeList() {
                             <TableBody>
                                 {filteredData.map(po => (
                                     <TableRow key={po.postOfficeID}>
-                                        <TableCell>{po.officeNumber}</TableCell>
+                                        <TableCell>{po.number}</TableCell>
                                         <TableCell>{po.address}</TableCell>
                                         <TableCell>
                                             <IconButton onClick={() => {
