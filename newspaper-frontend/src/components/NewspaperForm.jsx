@@ -38,15 +38,15 @@ export default function NewspaperForm({ newspaper, onClose }) {
 
     return (
         <Dialog open onClose={onClose} maxWidth="sm" fullWidth>
-            <DialogTitle>{newspaper ? 'Edit' : 'New'} Newspaper</DialogTitle>
+            <DialogTitle>{newspaper ? 'Редактировать' : 'Новая'} газета</DialogTitle>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <DialogContent>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth
-                                label="Name"
-                                {...register('name', { required: 'Name is required' })}
+                                label="Название"
+                                {...register('title', { required: 'Обязательное поле' })}
                                 error={!!errors.title}
                                 helperText={errors.title?.message}
                             />
@@ -54,12 +54,12 @@ export default function NewspaperForm({ newspaper, onClose }) {
                         <Grid item xs={12} md={6}>
                             <TextField
                                 fullWidth
-                                label="Index Edition"
-                                {...register('indexEdition', {
-                                    required: 'Index is required',
+                                label="Индекс издания"
+                                {...register('publicationIndex', {
+                                    required: 'Обязательное поле',
                                     pattern: {
                                         value: /^[A-Za-z0-9-]+$/,
-                                        message: 'Invalid index format'
+                                        message: 'Неверный формат индекса'
                                     }
                                 })}
                                 error={!!errors.publicationIndex}
@@ -69,8 +69,8 @@ export default function NewspaperForm({ newspaper, onClose }) {
                         <Grid item xs={12} md={6}>
                             <TextField
                                 fullWidth
-                                label="Editor"
-                                {...register('editor', { required: 'Editor is required' })}
+                                label="Редактор"
+                                {...register('editor', { required: 'Обязательное поле' })}
                                 error={!!errors.editor}
                                 helperText={errors.editor?.message}
                             />
@@ -78,12 +78,12 @@ export default function NewspaperForm({ newspaper, onClose }) {
                         <Grid item xs={12} md={6}>
                             <TextField
                                 fullWidth
-                                label="Price"
+                                label="Цена"
                                 type="number"
                                 inputProps={{ step: "0.01" }}
                                 {...register('price', {
-                                    required: 'Price is required',
-                                    min: { value: 0, message: 'Price must be positive' }
+                                    required: 'Обязательное поле',
+                                    min: { value: 0, message: 'Цена должна быть больше нуля' }
                                 })}
                                 error={!!errors.price}
                                 helperText={errors.price?.message}
@@ -103,7 +103,7 @@ export default function NewspaperForm({ newspaper, onClose }) {
                 <DialogActions>
                     <Button onClick={onClose}>Cancel</Button>
                     <Button type="submit" variant="contained" color="primary">
-                        {newspaper ? 'Update' : 'Create'}
+                        {newspaper ? 'Обновить' : 'Создать'}
                     </Button>
                 </DialogActions>
             </form>

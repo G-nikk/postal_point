@@ -67,7 +67,7 @@ export default function NewspaperList() {
     return (
         <div className="container">
             <Typography variant="h4" gutterBottom>
-                Newspaper Management System
+                Система управления газетами
             </Typography>
 
             <Grid container spacing={3}>
@@ -75,24 +75,21 @@ export default function NewspaperList() {
                     <Button
                         variant="contained"
                         startIcon={<Print />}
-                        onClick={() => {
-                            setSelectedNewspaper(null); // Сброс выбранной газеты
-                            setOpenForm(true); // Открытие формы для создания
-                        }}
+                        onClick={() => setOpenForm(true)}
                         sx={{ mb: 2 }}
                     >
-                        Add New Newspaper
+                        Добавить новую газету
                     </Button>
 
                     <TableContainer component={Paper}>
                         <Table>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>Name</TableCell>
-                                    <TableCell>Index</TableCell>
-                                    <TableCell>Editor</TableCell>
-                                    <TableCell>Price</TableCell>
-                                    <TableCell>Actions</TableCell>
+                                    <TableCell>Название</TableCell>
+                                    <TableCell>Индекс</TableCell>
+                                    <TableCell>Редактор</TableCell>
+                                    <TableCell>Цена</TableCell>
+                                    <TableCell>Действия</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
