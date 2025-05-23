@@ -4,9 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.shibanov.postal_point.entities.PrintRun;
 import ru.shibanov.postal_point.entities.PrintingHouse;
 import ru.shibanov.postal_point.services.PrintingHouseService;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,6 +64,30 @@ public class PrintingHouseController {
         }
         printingHouseService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/{id}/newspapers")
+    public ResponseEntity<List<PrintRun>> getNewspapersForPrintingHouse(@PathVariable Integer id) {
+        Optional<PrintingHouse> ph = Optional.ofNullable(printingHouseService.findById(id));
+        if (!ph.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(ph.get().getPrintRuns(), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/max-editor")
+    public ResponseEntity<String> getEditorWithMaxPrintRun(@PathVariable Integer id) {
+        Optional<PrintingHouse> ph = Optional.ofNullable(printingHouseService.findById(id));
+        if (!ph.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Optional<PrintRun> maxRun = ph.get().getPrintRuns().stream()
+                .max(Comparator.comparingInt(PrintRun::getQuantity));
+
+        return maxRun.map(run ->
+                        new ResponseEntity<>(run.getNewspaper().getEditor(), HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }
 

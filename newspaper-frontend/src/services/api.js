@@ -4,6 +4,16 @@ const API = axios.create({
     baseURL: 'http://localhost:8080',
 });
 
+export const printingHouseAPI = {
+    getAll: () => API.get('/printing-houses'),
+    getById: (id) => API.get(`/printing-houses/${id}`),
+    create: (data) => API.post('/printing-houses', data),
+    update: (id, data) => API.put(`/printing-houses/${id}`, data),
+    delete: (id) => API.delete(`/printing-houses/${id}`),
+    getNewspapers: (id) => API.get(`/printing-houses/${id}/newspapers`),
+    getMaxEditor: (id) => API.get(`/printing-houses/${id}/max-editor`)
+};
+
 export const newspaperAPI = {
     // Основные CRUD операции
     getAll: () => API.get('/newspapers'),
