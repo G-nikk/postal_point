@@ -4,6 +4,18 @@ const API = axios.create({
     baseURL: 'http://localhost:8080',
 });
 
+export const postOfficeAPI = {
+    getAll: () => API.get('/post-offices'),
+    getById: (id) => API.get(`/post-offices/${id}`),
+    create: (data) => API.post('/post-offices', data),
+    update: (id, data) => API.put(`/post-offices/${id}`, data),
+    delete: (id) => API.delete(`/post-offices/${id}`),
+    getNewspapers: (id) => API.get(`/post-offices/${id}/newspapers`),
+    getPrintHouses: (id) => API.get(`/post-offices/${id}/printing-houses`),
+    getMaxCost: () => API.get('/post-offices/max-cost'),
+    getMostReceived: () => API.get('/post-offices/most-received')
+};
+
 export const printingHouseAPI = {
     getAll: () => API.get('/printing-houses'),
     getById: (id) => API.get(`/printing-houses/${id}`),

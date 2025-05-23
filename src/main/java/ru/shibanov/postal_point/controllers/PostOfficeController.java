@@ -11,7 +11,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/post-offices")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:3000")
 public class PostOfficeController {
 
     private final PostOfficeService postOfficeService;
