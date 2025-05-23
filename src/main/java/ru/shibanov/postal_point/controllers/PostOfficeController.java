@@ -4,10 +4,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.shibanov.postal_point.entities.*;
+import ru.shibanov.postal_point.entities.dto.NewspaperQuantityDTO;
 import ru.shibanov.postal_point.services.*;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/post-offices")
@@ -157,6 +159,35 @@ public class PostOfficeController {
         }
 
         return maxCostOffice != null ? new ResponseEntity<>(maxCostOffice, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/{id}/newspapers")
+    public ResponseEntity<List<NewspaperQuantityDTO>> getNewspapersForPostOffice(@PathVariable Integer id) {
+        List<Delivery> deliveries = deliveryService.findByPostOffice(postOfficeService.findById(id).orElseThrow());
+
+        Map<Newspaper, Integer> newspaperQuantities = new HashMap<>();
+        for (Delivery delivery : deliveries) {
+            Newspaper newspaper = delivery.getPrintRun().getNewspaper();
+            int quantity = newspaperQuantities.getOrDefault(newspaper, 0);
+            newspaperQuantities.put(newspaper, quantity + delivery.getQuantity());
+        }
+
+        List<NewspaperQuantityDTO> result = newspaperQuantities.entrySet().stream()
+                .map(entry -> new NewspaperQuantityDTO(entry.getKey().getName(), entry.getValue()))
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/printing-houses")
+    public ResponseEntity<List<PrintingHouse>> getPrintingHousesForPostOffice(@PathVariable Integer id) {
+        List<Delivery> deliveries = deliveryService.findByPostOffice(postOfficeService.findById(id).orElseThrow());
+
+        Set<PrintingHouse> printingHouses = deliveries.stream()
+                .map(d -> d.getPrintRun().getPrintingHouse())
+                .collect(Collectors.toSet());
+
+        return new ResponseEntity<>(new ArrayList<>(printingHouses), HttpStatus.OK);
     }
 
 }
