@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { printingHouseAPI } from '../services/api';
 import {
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-    Paper, Button, IconButton, Dialog, TextField, Typography, Grid,
-    CircularProgress, Accordion, AccordionSummary, AccordionDetails
+    Paper, Button, IconButton, Dialog, DialogTitle, DialogContent,
+    DialogActions, TextField, Typography, Grid, CircularProgress,
+    Accordion, AccordionSummary, AccordionDetails, List, ListItem,
+    ListItemText
 } from '@mui/material';
 import { Add, Edit, Delete, Info, FilterList } from '@mui/icons-material';
 
