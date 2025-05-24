@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "newspaperID": { "type": "integer" },
+    "name": { "type": "string" },
+    "indexEdition": { "type": "string" },
+    "editor": { "type": "string" },
+    "price": { "type": "number" }
+  },
+  "required": ["newspaperID", "name", "indexEdition", "editor", "price"]
+}
