@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "properties": {
+    "postOfficeID": { "type": "integer" },
+    "number": { "type": "string" },
+    "address": { "type": "string" }
+  },
+  "required": ["postOfficeID", "number", "address"]
+}

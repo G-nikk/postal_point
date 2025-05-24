@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "properties": {
+    "printingHouseID": { "type": "integer" },
+    "name": { "type": "string" },
+    "address": { "type": "string" }
+  },
+  "required": ["printingHouseID", "name", "address"]
+}

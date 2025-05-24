@@ -1,0 +1,4 @@
+{
+  "type": "array",
+  "items": { "$ref": "post_office_schema.json" }
+}
