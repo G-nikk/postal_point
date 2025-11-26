@@ -6,9 +6,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
-import ru.shibanov.postal_point.repositories.NewspaperRepository;
+
 
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 import static org.hamcrest.Matchers.*;
@@ -23,7 +22,7 @@ public class NewspaperAPITest {
 
     @Test
     public void E2ETest() {
-        String newspaperJson = "{ \"name\": \"Новая газета\", \"indexEdition\": \"NG123\", \"editor\": \"Редактор Редакторов\", \"price\": 35.50 }";
+        String newspaperJson = "{ \"name\": \"Бук\", \"indexEdition\": \"NG667\", \"editor\": \"Редактор Редакторов\", \"price\": 35.50 }";
 
         RestAssured.given()
                 .contentType(ContentType.JSON)
@@ -43,9 +42,9 @@ public class NewspaperAPITest {
                 .and()
                 .body(matchesJsonSchemaInClasspath("schemas/all_newspapers_schema.json"))
                 .and()
-                .body(containsStringIgnoringCase("Новая газета"))
+                .body(containsStringIgnoringCase("Бук"))
                 .extract()
-                .path("find { it.name == 'Новая газета' }.newspaperID");
+                .path("find { it.name == 'Бук' }.newspaperID");
 
         RestAssured.given()
                 .when()
@@ -54,11 +53,11 @@ public class NewspaperAPITest {
                 .statusCode(200)
                 .body(matchesJsonSchemaInClasspath("schemas/newspaper_schema.json"))
                 .body("newspaperID", equalTo(newspaperId))
-                .body("indexEdition", equalTo("NG123"))
+                .body("indexEdition", equalTo("NG667"))
                 .body("editor", equalTo("Редактор Редакторов"))
                 .body("price", equalTo(35.5F));
 
-        String updatedJson = "{ \"newspaperID\": " + newspaperId + ", \"name\": \"Обновленная газета\", \"indexEdition\": \"NG123\", \"editor\": \"Редактор Редакторов\", \"price\": 35.50 }";
+        String updatedJson = "{ \"newspaperID\": " + newspaperId + ", \"name\": \"Обновленная газетка\", \"indexEdition\": \"NG667\", \"editor\": \"Редактор Редакторов\", \"price\": 35.50 }";
         RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(updatedJson)
@@ -67,7 +66,7 @@ public class NewspaperAPITest {
                 .then()
                 .statusCode(200)
                 .body(matchesJsonSchemaInClasspath("schemas/newspaper_schema.json"))
-                .body("name", equalTo("Обновленная газета"));
+                .body("name", equalTo("Обновленная газетка"));
 
         RestAssured.given()
                 .when()
@@ -103,7 +102,7 @@ public class NewspaperAPITest {
 
     @Test
     public void testCreateNewspaper() {
-        String newspaperJson = "{ \"name\": \"Новая газета\", \"indexEdition\": \"NG123\", \"editor\": \"Редактор Редакторов\", \"price\": 35.50 }";
+        String newspaperJson = "{ \"name\": \"Новая газета\", \"indexEdition\": \"NG337\", \"editor\": \"Редактор Редакторов\", \"price\": 35.50 }";
 
         RestAssured.given()
                 .contentType(ContentType.JSON)
@@ -133,7 +132,7 @@ public class NewspaperAPITest {
     public void testDeleteNewspaper() {
         RestAssured.given()
                 .when()
-                .delete("/newspapers/1")
+                .delete("/newspapers/78")
                 .then()
                 .statusCode(204);
     }
