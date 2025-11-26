@@ -15,8 +15,7 @@ public class PrintingHouseE2ETest extends BaseTest {
         Assertions.assertTrue(printingHousesPage.findPrintingHouseByName(name));
         printingHousesPage.editPrintingHouse(name);
         Assertions.assertTrue(printingHousesPage.findPrintingHouseByName(name));
-        printingHousesPage.deletePrintingHouse(name);
+        printingHousesPage.deletePrintingHouse();
         Assertions.assertFalse(printingHousesPage.findPrintingHouseByName(name));
     }
-
 }

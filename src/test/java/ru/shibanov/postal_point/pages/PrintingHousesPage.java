@@ -36,7 +36,7 @@ public class PrintingHousesPage {
         nameInput.setValue(name);
     }
 
-    public void deletePrintingHouse(String name) {
+    public void deletePrintingHouse() {
         deleteButton.click();
     }
 }
