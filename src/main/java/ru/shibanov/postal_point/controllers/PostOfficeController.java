@@ -3,6 +3,7 @@ package ru.shibanov.postal_point.controllers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.shibanov.postal_point.entities.*;
 import ru.shibanov.postal_point.entities.dto.NewspaperQuantityDTO;
 import ru.shibanov.postal_point.services.*;
@@ -42,7 +43,7 @@ public class PostOfficeController {
     public ResponseEntity<PostOffice> getPostOfficeById(@PathVariable Integer id) {
         Optional<PostOffice> postOffice = postOfficeService.findById(id);
         return postOffice.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post office with id " + id + " not found"));
     }
 
     // POST /post-offices - Create a new post office
@@ -56,7 +57,7 @@ public class PostOfficeController {
     @PutMapping("/{id}")
     public ResponseEntity<PostOffice> updatePostOffice(@PathVariable Integer id, @RequestBody PostOffice updatedPostOffice) {
         if (!postOfficeService.existsById(id)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Post office with id " + id + " not found");
         }
         updatedPostOffice.setPostOfficeID(id); // Ensure the ID is set for the update
         PostOffice savedPostOffice = postOfficeService.save(updatedPostOffice);
@@ -67,7 +68,7 @@ public class PostOfficeController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePostOffice(@PathVariable Integer id) {
         if (!postOfficeService.existsById(id)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Post office with id " + id + " not found");
         }
         postOfficeService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -95,9 +96,10 @@ public class PostOfficeController {
             }
         }
 
-        return mostReceivedOffice != null ?
-                new ResponseEntity<>(mostReceivedOffice, HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (mostReceivedOffice == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No post offices found");
+        }
+        return new ResponseEntity<>(mostReceivedOffice, HttpStatus.OK);
     }
 
     // GET /post-offices/newspaper-in-printing-house?newspaperId={newspaperId}&printingHouseId={printingHouseId} - Get post offices receiving a newspaper from a printing house
@@ -111,7 +113,7 @@ public class PostOfficeController {
         PrintingHouse printingHouse = printingHouseService.findById(printingHouseId);
 
         if (newspaper == null || printingHouse == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Newspaper or printing house not found");
         }
 
         // Получаем печать (тиражи) для данной газеты и типографии
@@ -158,12 +160,17 @@ public class PostOfficeController {
             }
         }
 
-        return maxCostOffice != null ? new ResponseEntity<>(maxCostOffice, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (maxCostOffice == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No post offices found");
+        }
+        return new ResponseEntity<>(maxCostOffice, HttpStatus.OK);
     }
 
     @GetMapping("/{id}/newspapers")
     public ResponseEntity<List<NewspaperQuantityDTO>> getNewspapersForPostOffice(@PathVariable Integer id) {
-        List<Delivery> deliveries = deliveryService.findByPostOffice(postOfficeService.findById(id).orElseThrow());
+        PostOffice postOffice = postOfficeService.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post office with id " + id + " not found"));
+        List<Delivery> deliveries = deliveryService.findByPostOffice(postOffice);
 
         Map<Newspaper, Integer> newspaperQuantities = new HashMap<>();
         for (Delivery delivery : deliveries) {
@@ -181,7 +188,9 @@ public class PostOfficeController {
 
     @GetMapping("/{id}/printing-houses")
     public ResponseEntity<List<PrintingHouse>> getPrintingHousesForPostOffice(@PathVariable Integer id) {
-        List<Delivery> deliveries = deliveryService.findByPostOffice(postOfficeService.findById(id).orElseThrow());
+        PostOffice postOffice = postOfficeService.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post office with id " + id + " not found"));
+        List<Delivery> deliveries = deliveryService.findByPostOffice(postOffice);
 
         Set<PrintingHouse> printingHouses = deliveries.stream()
                 .map(d -> d.getPrintRun().getPrintingHouse())

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.shibanov.postal_point.entities.PrintRun;
 import ru.shibanov.postal_point.entities.PrintingHouse;
 import ru.shibanov.postal_point.services.PrintingHouseService;
@@ -35,7 +36,7 @@ public class PrintingHouseController {
     public ResponseEntity<PrintingHouse> getPrintingHouseById(@PathVariable Integer id) {
         Optional<PrintingHouse> printingHouse = Optional.ofNullable(printingHouseService.findById(id));
         return printingHouse.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Printing house with id " + id + " not found"));
     }
 
     // POST /printing-houses - Create a new printing house
@@ -49,7 +50,7 @@ public class PrintingHouseController {
     @PutMapping("/{id}")
     public ResponseEntity<PrintingHouse> updatePrintingHouse(@PathVariable Integer id, @RequestBody PrintingHouse updatedPrintingHouse) {
         if (!printingHouseService.existsById(id)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Printing house with id " + id + " not found");
         }
         updatedPrintingHouse.setPrintingHouseID(id); // Ensure the ID is set for the update
         PrintingHouse savedPrintingHouse = printingHouseService.save(updatedPrintingHouse);
@@ -60,7 +61,7 @@ public class PrintingHouseController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePrintingHouse(@PathVariable Integer id) {
         if (!printingHouseService.existsById(id)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Printing house with id " + id + " not found");
         }
         printingHouseService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -69,25 +70,23 @@ public class PrintingHouseController {
     @GetMapping("/{id}/newspapers")
     public ResponseEntity<List<PrintRun>> getNewspapersForPrintingHouse(@PathVariable Integer id) {
         Optional<PrintingHouse> ph = Optional.ofNullable(printingHouseService.findById(id));
-        if (!ph.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(ph.get().getPrintRuns(), HttpStatus.OK);
+        PrintingHouse printingHouse = ph.orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Printing house with id " + id + " not found"));
+        return new ResponseEntity<>(printingHouse.getPrintRuns(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}/max-editor")
     public ResponseEntity<String> getEditorWithMaxPrintRun(@PathVariable Integer id) {
         Optional<PrintingHouse> ph = Optional.ofNullable(printingHouseService.findById(id));
-        if (!ph.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        PrintingHouse printingHouse = ph.orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Printing house with id " + id + " not found"));
 
-        Optional<PrintRun> maxRun = ph.get().getPrintRuns().stream()
+        Optional<PrintRun> maxRun = printingHouse.getPrintRuns().stream()
                 .max(Comparator.comparingInt(PrintRun::getQuantity));
 
         return maxRun.map(run ->
                         new ResponseEntity<>(run.getNewspaper().getEditor(), HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No print runs found for printing house with id " + id));
     }
 }
 

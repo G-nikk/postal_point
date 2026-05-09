@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.shibanov.postal_point.entities.Newspaper;
 import ru.shibanov.postal_point.entities.PrintRun;
 import ru.shibanov.postal_point.entities.PrintingHouse;
@@ -42,7 +43,7 @@ public class NewspaperController {
     public ResponseEntity<Newspaper> getNewspaperById(@PathVariable Integer id) {
         Optional<Newspaper> newspaper = Optional.ofNullable(newspaperService.findById(id));
         return newspaper.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Newspaper with id " + id + " not found"));
     }
 
     // POST /newspapers - Create a new newspaper
@@ -52,7 +53,8 @@ public class NewspaperController {
             Newspaper savedNewspaper = newspaperService.save(newspaper);
             return new ResponseEntity<>(savedNewspaper, HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Or handle the specific exception (e.g., unique constraint violation)
+            String msg = (e.getMessage() == null || e.getMessage().isBlank()) ? "Bad request" : e.getMessage();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, msg);
         }
 
     }
@@ -61,7 +63,7 @@ public class NewspaperController {
     @PutMapping("/{id}")
     public ResponseEntity<Newspaper> updateNewspaper(@PathVariable Integer id, @RequestBody Newspaper updatedNewspaper) {
         if (!newspaperService.existsById(id)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Newspaper with id " + id + " not found");
         }
         updatedNewspaper.setNewspaperID(id); // Ensure the ID is set for the update
         Newspaper savedNewspaper = newspaperService.save(updatedNewspaper);
@@ -72,7 +74,7 @@ public class NewspaperController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteNewspaper(@PathVariable Integer id) {
         if (!newspaperService.existsById(id)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Newspaper with id " + id + " not found");
         }
         newspaperService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -82,11 +84,10 @@ public class NewspaperController {
     @GetMapping("/{newspaperId}/printing-houses")
     public ResponseEntity<List<PrintingHouse>> getPrintingHousesForNewspaper(@PathVariable Integer newspaperId) {
         Optional<Newspaper> newspaper = Optional.ofNullable(newspaperService.findById(newspaperId));
-        if (!newspaper.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        Newspaper newspaperEntity = newspaper.orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Newspaper with id " + newspaperId + " not found"));
 
-        List<PrintRun> printRuns = printRunService.findByNewspaper(newspaper.get());
+        List<PrintRun> printRuns = printRunService.findByNewspaper(newspaperEntity);
         List<PrintingHouse> printingHouses = printRuns.stream()
                 .map(PrintRun::getPrintingHouse)
                 .distinct()
@@ -101,19 +102,17 @@ public class NewspaperController {
         Optional<PrintingHouse> printingHouseOptional = Optional.ofNullable(printingHouseService.findById(printingHouseId));
         Optional<Newspaper> newspaperOptional = Optional.ofNullable(newspaperService.findById(newspaperId));
 
-        if (!printingHouseOptional.isPresent() || !newspaperOptional.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        PrintingHouse printingHouse = printingHouseOptional.get();
-        Newspaper newspaper = newspaperOptional.get();
+        PrintingHouse printingHouse = printingHouseOptional.orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Printing house with id " + printingHouseId + " not found"));
+        Newspaper newspaper = newspaperOptional.orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Newspaper with id " + newspaperId + " not found"));
 
         Optional<PrintRun> largestPrintRun = printRunService.findTopByPrintingHouseAndNewspaperOrderByQuantityDesc(printingHouse, newspaper);
 
         if (largestPrintRun.isPresent()) {
             return new ResponseEntity<>(newspaper.getEditor(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Or return an empty string, indicating no print runs.
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No print runs found for the given printing house and newspaper");
         }
     }
 
@@ -121,11 +120,8 @@ public class NewspaperController {
     @GetMapping("/total-cost")
     public ResponseEntity<BigDecimal> getTotalCostOfPrintRuns(@RequestParam Integer newspaperId) {
         Optional<Newspaper> newspaperOptional = Optional.ofNullable(newspaperService.findById(newspaperId));
-        if (!newspaperOptional.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        Newspaper newspaper = newspaperOptional.get();
+        Newspaper newspaper = newspaperOptional.orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Newspaper with id " + newspaperId + " not found"));
         List<PrintRun> printRuns = printRunService.findByNewspaper(newspaper);
 
         BigDecimal totalCost = printRuns.stream()
